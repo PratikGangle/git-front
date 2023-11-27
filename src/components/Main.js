@@ -13,7 +13,7 @@ function Main() {
 
     const check = async () => {
         try {
-            const response = await fetch('/main', {
+            const response = await fetch('https://node-mysql-api-rhcz.onrender.com/main', {
                 method: 'get',
                 headers: {
                     Accept: 'application/json',
@@ -35,7 +35,7 @@ function Main() {
             console.error('An error occurred while checking:', err);
         }
         try {
-            const response = await fetch('/home', {
+            const response = await fetch('https://node-mysql-api-rhcz.onrender.com/home', {
                 method: 'get',
                 headers: {
                     Accept: 'application/json',
@@ -79,7 +79,7 @@ function Main() {
             return;
         }
         try {
-            const response = await fetch('/generateToken', {
+            const response = await fetch('https://node-mysql-api-rhcz.onrender.com/generateToken', {
                 method: 'Post',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ function Main() {
             });
 
             if (response.status === 201) {
-                const res = await fetch('/reg', {
+                const res = await fetch('https://node-mysql-api-rhcz.onrender.com/reg', {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
