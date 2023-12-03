@@ -4,10 +4,33 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import './i18n';
+import { SignContextProvider } from './context/signContext';
+import { RealTimeProvider } from './context/RealTimeContext';
+import { ContentContextProvider } from './context/contentContext';
+import { HomeContextProvider } from './context/homeContext';
+import { VideoContextProvider } from './context/videoContext';
+import { HomeTypeContextProvider } from './context/homeTypeContext';
+import { MyListContextProvider } from './context/myListContext';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RealTimeProvider>
+      <ContentContextProvider>
+        <HomeContextProvider>
+          <VideoContextProvider>
+            <HomeTypeContextProvider>
+              <SignContextProvider>
+                <MyListContextProvider>
+                  <App />
+                </MyListContextProvider>
+              </SignContextProvider>
+            </HomeTypeContextProvider>
+          </VideoContextProvider>
+        </HomeContextProvider>
+      </ContentContextProvider>
+    </RealTimeProvider>
   </React.StrictMode>
 );
 
