@@ -256,66 +256,6 @@ function HomeSeasonXComponent({ series, seasons, moreDetails }) {
         removeListTitleRef.current.style.display = 'none'
     }
 
-
-
-    const playContent = async () => {
-        setVideoSrc(selectedSeason[selectedPart][0].episodeLink[0])
-        setVideoTitle(`${selectedPart} : ${selectedSeason[selectedPart][0].episodeName[0]}`)
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-        try {
-            const response = await fetch('/userHistory/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-                body: JSON.stringify({ email: email, contentLinkName: seriesArray.contentLinkName }),
-            });
-
-            if (response.status === 200) {
-                // console.log('Added successfully');
-                updateMyListUpdation((prev) => prev + 1);
-            }
-            else if (response.status === 400) {
-                // console.log('Failed: ', response.status);
-            }
-            else {
-                // console.log('Failed:', response.status);
-            }
-        } catch (error) {
-            // console.error('Error adding content to user list:', error);
-        }
-    }
-
-    const playEpisodes = async (index) => {
-        setVideoSrc(selectedSeason[selectedPart][0].episodeLink[index])
-        setVideoTitle(`${selectedPart} : ${selectedSeason[selectedPart][0].episodeName[index]}`)
-        try {
-            const response = await fetch('/userHistory/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-                body: JSON.stringify({ email: email, contentLinkName: seriesArray.contentLinkName }),
-            });
-
-            if (response.status === 200) {
-                // console.log('Added successfully');
-                updateMyListUpdation((prev) => prev + 1);
-            }
-            else if (response.status === 400) {
-                // console.log('Failed: ', response.status);
-            }
-            else {
-                // console.log('Failed:', response.status);
-            }
-        } catch (error) {
-            // console.error('Error adding content to user list:', error);
-        }
-    }
-
     return (
         <>
             <div id='home-season-info-div'>
@@ -334,7 +274,7 @@ function HomeSeasonXComponent({ series, seasons, moreDetails }) {
                         <br></br>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', width: '170px', justifyContent: 'space-evenly' }}>
-                                <div onClick={playContent} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', border: 'none', height: '40px', borderRadius: '4px', backgroundColor: 'white', width: '110px' }}>
+                                <div style={{ cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', border: 'none', height: '40px', borderRadius: '4px', backgroundColor: 'white', width: '110px' }}>
                                     <svg height={"20px"} width={"20px"}>
                                         <polygon points="0,0 0,20 15,10" fill="black" strokeWidth="1" stroke="black"></polygon>
                                     </svg>
@@ -423,7 +363,7 @@ function HomeSeasonXComponent({ series, seasons, moreDetails }) {
                         {selectedPart && selectedSeason && (
 
                             selectedSeason[selectedPart][0].episodes.map((episode, index) => (
-                                <div key={index} onClick={() => playEpisodes(index)} onMouseLeave={() => hideEpisodePlayButton(index)} onMouseEnter={() => showEpisodePlayButton(index)} style={{ display: 'flex', position: 'relative', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', borderBottom: '1px solid #a1a1a1', backgroundColor: `${index === 0 ? '#333333' : ''}` }}>
+                                <div key={index} onMouseLeave={() => hideEpisodePlayButton(index)} onMouseEnter={() => showEpisodePlayButton(index)} style={{ display: 'flex', position: 'relative', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', borderBottom: '1px solid #a1a1a1', backgroundColor: `${index === 0 ? '#333333' : ''}` }}>
                                     <svg height={"32px"} width={"32px"} ref={el => episodePlayButtonRef.current[index] = el} style={{ position: 'absolute', left: '110px', display: 'none' }}>
                                         <circle cx={15} cy={15} r='14' stroke='white' fill='#3333'></circle>
                                         <polygon points="12,10 12,20 20,15" fill="white" strokeWidth="1" stroke="white"></polygon>

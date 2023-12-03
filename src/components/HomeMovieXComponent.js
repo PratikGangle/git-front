@@ -224,37 +224,6 @@ function HomeMovieXComponent({ series, moreDetails }) {
         removeListTitleRef.current.style.display = 'none'
     }
 
-    const playContent = async () => {
-        setVideoSrc(seriesArray.movieLink)
-        setVideoTitle(seriesArray.titleName)
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-        try {
-            const response = await fetch('/userHistory/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-                body: JSON.stringify({ email: email, contentLinkName: seriesArray.contentLinkName }),
-            });
-
-            if (response.status === 200) {
-                // console.log('Added successfully');
-                updateMyListUpdation((prev) => prev + 1);
-            }
-            else if (response.status === 400) {
-                // console.log('Failed: ', response.status);
-            }
-            else {
-                // console.log('Failed:', response.status);
-            }
-        } catch (error) {
-            // console.error('Error adding content to user list:', error);
-        }
-    }
-
-
     return (
         <>
             <div id='home-movie-info-div'>
@@ -273,7 +242,7 @@ function HomeMovieXComponent({ series, moreDetails }) {
                         <br></br>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', width: '170px', justifyContent: 'space-evenly' }}>
-                                <div onClick={playContent} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', border: 'none', height: '40px', borderRadius: '4px', backgroundColor: 'white', width: '110px' }}>
+                                <div style={{ cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', border: 'none', height: '40px', borderRadius: '4px', backgroundColor: 'white', width: '110px' }}>
                                     <svg height={"20px"} width={"20px"}>
                                         <polygon points="0,0 0,20 15,10" fill="black" strokeWidth="1" stroke="black"></polygon>
                                     </svg>

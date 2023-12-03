@@ -17,7 +17,6 @@ import HomeMovieComponent from './HomeMovieComponent';
 import HomeMyListComponent from './HomeMyListComponent';
 import { MyListContext } from '../context/myListContext';
 import HomeAccount from './HomeAccount';
-import HomeHistoryComponent from './HomeHistoryComponent';
 
 
 function Home() {
@@ -26,11 +25,32 @@ function Home() {
     const { myListUpdation } = useContext(MyListContext);
 
     const [userList, setUserList] = useState(null);
-    const [userHistory, setUserHistory] = useState(null);
-    const [planExpired, setPlanExpired] = useState(false);
 
     let history = useNavigate();
 
+    // const currentDate = new Date();
+
+    // // Add 1 minute to the current date
+    // const expirationDate = new Date(currentDate.getTime() + 60000); // 60000 milliseconds = 1 minute
+
+    // // Convert the expiration date to a string in the required format
+    // const expiresString = expirationDate.toUTCString();
+
+    // useEffect(() => {
+    //     // Assuming you have already set the cookie on page load
+
+    //     // Set a timeout to clear the cookie after 1 minute (60 seconds)
+    //     const timeoutId = setTimeout(() => {
+    //         // Clear the cookie by setting an expiration time in the past
+    //         document.cookie = `signed_token=; expires=${expiresString}; path=/;`;
+
+    //         window.location.href = '/';
+    //         // Optionally, you may want to perform additional actions, like redirecting or updating the UI
+    //     }, 60000); // 60000 milliseconds = 1 minute
+
+    //     // Cleanup the timeout when the component is unmounted
+    //     return () => clearTimeout(timeoutId);
+    // }, []);
     const check = async () => {
         try {
             const response = await fetch('/home', {
@@ -44,49 +64,24 @@ function Home() {
 
             if (response.status === 200) {
                 const data = await response.json();
-                // console.log('User is valid. Email:', data.email);
-                setPlanExpired(false);
+                console.log('User is valid. Email:', data.email);
                 setEmail(data.email);
             } else if (response.status === 401) {
-                // console.log('User is not valid. Proceed to error page');
+                console.log('User is not valid. Proceed to error page');
                 history('/');
-            }
-            else if (response.status === 500) {
-                setPlanExpired(true);
-            }
-            else {
-                // console.log('Unexpected response status:', response.status);
+            } else {
+                console.log('Unexpected response status:', response.status);
                 history('/');
             }
         }
         catch (err) {
             console.log(err);
         }
-
-        try {
-            const response = await fetch('/protected-route', {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
-            // console.log("validity: ", response.status)
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     useEffect(() => {
         check();
-        const intervalId = setInterval(() => {
-            check();
-        }, 60000);
-        return () => clearInterval(intervalId);
     }, []);
-
-
 
 
     const { contentLink, updateContentLink } = useContext(HomeContext);
@@ -102,8 +97,6 @@ function Home() {
     const replayRef = useRef(null);
     const volumeControlRef = useRef(null);
     const [countdown, setCountDown] = useState(0);
-    const [videoSrc, setVideoSrc] = useState(null);
-    const [videoTitle, setVideoTitle] = useState(null);
 
 
     const showMoreInfo = () => {
@@ -195,8 +188,7 @@ function Home() {
             const titleContent = titleContentRef.current;
             if (countdown >= 1) {
                 const timer = setTimeout(() => {
-                    if (countdown < 70) {
-                        // console.log(countdown)
+                    if (countdown < 84) {
                         videoRef.current.play().catch(error => {
                             console.log('Error: ', error)
                         })
@@ -249,21 +241,6 @@ function Home() {
                 muteRef.current.style.display = 'block';
                 setMute(false)
             }
-        }
-    }
-
-    const playContent = () => {
-        if (navbar === 'home') {
-
-            setVideoSrc('https://github.com/CodeTusharSingh/Netflix-Clone/raw/main/sample-video-2.mp4')
-            setVideoTitle("One Piece")
-        }
-    }
-
-    const closeVideo = () => {
-        if (navbar === 'home') {
-            setVideoSrc(null);
-            setVideoTitle(null);
         }
     }
 
@@ -334,31 +311,16 @@ function Home() {
                 contentLink: data.map((item) => item.contentLink),
                 contentLinkName: data.map((item) => item.contentLinkName),
             }]
-            // console.log(userContentList);
+            console.log(userContentList);
             setUserList(userContentList)
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-        try {
-            const response = await axios.get(`/userHistory/${email}`);
-            const data = response.data;
-
-            const userHistoryList = [{
-                contentImg: data.map((item) => item.contentImg),
-                contentTitle: data.map((item) => item.contentTitle),
-                contentType: data.map((item) => item.contentType),
-                contentLink: data.map((item) => item.contentLink),
-                contentLinkName: data.map((item) => item.contentLinkName),
-            }]
-            console.log(userHistoryList);
-            setUserHistory(userHistoryList)
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
     useEffect(() => {
-        // console.log(myListUpdation)
+        console.log(myListUpdation)
+
         if (email.length !== 0) {
             fetchData();
         }
@@ -381,7 +343,6 @@ function Home() {
     const navbarMovieRef = useRef(null);
     const navbarTVShowRef = useRef(null);
     const navbarMyListRef = useRef(null);
-    const navbarHistoryRef = useRef(null);
     const navbarAccountRef = useRef(null);
 
 
@@ -395,8 +356,6 @@ function Home() {
             navbarTVShowRef.current.style.fontWeight = '500'
             navbarMyListRef.current.style.color = '#a1a1a1'
             navbarMyListRef.current.style.fontWeight = '500'
-            navbarHistoryRef.current.style.color = '#a1a1a1'
-            navbarHistoryRef.current.style.fontWeight = '500'
             navbarAccountRef.current.style.border = 'none';
 
         }
@@ -409,8 +368,6 @@ function Home() {
             navbarTVShowRef.current.style.fontWeight = '500'
             navbarMyListRef.current.style.color = '#a1a1a1'
             navbarMyListRef.current.style.fontWeight = '500'
-            navbarHistoryRef.current.style.color = '#a1a1a1'
-            navbarHistoryRef.current.style.fontWeight = '500'
             navbarAccountRef.current.style.border = 'none';
 
         }
@@ -423,8 +380,6 @@ function Home() {
             navbarTVShowRef.current.style.fontWeight = '700'
             navbarMyListRef.current.style.color = '#a1a1a1'
             navbarMyListRef.current.style.fontWeight = '500'
-            navbarHistoryRef.current.style.color = '#a1a1a1'
-            navbarHistoryRef.current.style.fontWeight = '500'
             navbarAccountRef.current.style.border = 'none';
 
         }
@@ -437,8 +392,6 @@ function Home() {
             navbarTVShowRef.current.style.fontWeight = '500'
             navbarMyListRef.current.style.color = 'white'
             navbarMyListRef.current.style.fontWeight = '700'
-            navbarHistoryRef.current.style.color = '#a1a1a1'
-            navbarHistoryRef.current.style.fontWeight = '500'
             navbarAccountRef.current.style.border = 'none';
         }
         else if (navbar === 'account') {
@@ -450,22 +403,7 @@ function Home() {
             navbarTVShowRef.current.style.fontWeight = '500'
             navbarMyListRef.current.style.color = '#a1a1a1'
             navbarMyListRef.current.style.fontWeight = '500'
-            navbarHistoryRef.current.style.color = '#a1a1a1'
-            navbarHistoryRef.current.style.fontWeight = '500'
             navbarAccountRef.current.style.border = '2px solid white';
-        }
-        else if (navbar === 'history') {
-            navbarHomeRef.current.style.color = '#a1a1a1'
-            navbarHomeRef.current.style.fontWeight = '500'
-            navbarMovieRef.current.style.color = '#a1a1a1'
-            navbarMovieRef.current.style.fontWeight = '500'
-            navbarTVShowRef.current.style.color = '#a1a1a1'
-            navbarTVShowRef.current.style.fontWeight = '500'
-            navbarMyListRef.current.style.color = '#a1a1a1'
-            navbarMyListRef.current.style.fontWeight = '500'
-            navbarHistoryRef.current.style.color = 'white'
-            navbarHistoryRef.current.style.fontWeight = '700'
-            navbarAccountRef.current.style.border = 'none';
         }
     }, [navbar])
 
@@ -486,7 +424,6 @@ function Home() {
                     <p ref={navbarMovieRef} onClick={() => handleNavbar('movie')}>Movies</p>
                     <p ref={navbarTVShowRef} onClick={() => handleNavbar('tvshow')}>TV Shows</p>
                     <p ref={navbarMyListRef} onClick={() => handleNavbar('mylist')}>My List</p>
-                    <p ref={navbarHistoryRef} onClick={() => handleNavbar('history')}>History</p>
                 </div>
                 <div id='home-header-account-icon'>
                     <img ref={navbarAccountRef} onClick={() => handleNavbar('account')} src='https://occ-0-4344-2186.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABY20DrC9-11ewwAs6nfEgb1vrORxRPP9IGmlW1WtKuaLIz8VxCx5NryzDK3_ez064IsBGdXjVUT59G5IRuFdqZlCJCneepU.png?r=229' alt='Your Account' title='Your Account'></img>
@@ -515,7 +452,7 @@ function Home() {
                             <div id='home-main-content-controls' style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '90%', flexWrap: 'wrap', alignItems: 'center', marginLeft: '50px' }}>
 
                                 <div id='home-main-content-controls-play' style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', width: '270px' }}>
-                                    <div onClick={playContent} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', border: 'none', height: '50px', borderRadius: '4px', padding: '0px 25px', backgroundColor: 'white' }}>
+                                    <div style={{ cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', border: 'none', height: '50px', borderRadius: '4px', padding: '0px 25px', backgroundColor: 'white' }}>
                                         <svg height={"20px"} width={"20px"}>
                                             <polygon points="0,0 0,20 15,10" fill="black" strokeWidth="1" stroke="black"></polygon>
                                         </svg>
@@ -525,7 +462,7 @@ function Home() {
                                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid white', textAlign: 'center', color: 'white', fontFamily: 'NetflixSansLite', fontSize: '15px', borderRadius: '50%', padding: '2px 10px' }}>
                                             i
                                         </div>
-                                        <p style={{ fontFamily: 'NetflixSans', color: 'white', fontSize: '18px' }}>&nbsp;More Info</p>
+                                        <p style={{ fontFamily: 'NetflixSans', color: 'white', fontSize: '18px' }}> More Info</p>
                                     </div>
                                 </div>
 
@@ -594,16 +531,9 @@ function Home() {
             {navbar === 'movie' &&
                 <HomeMovieComponent contents={actionContents}></HomeMovieComponent>
             }
-            {navbar === 'mylist' &&
-                (userList !== null &&
-                    <HomeMyListComponent contents={userList}></HomeMyListComponent>
-                )
-            }
             {
-                navbar === 'history' &&
-                (userHistory !== null &&
-                    <HomeHistoryComponent contents={userHistory}></HomeHistoryComponent>
-                )
+                navbar === 'mylist' &&
+                <HomeMyListComponent contents={userList}></HomeMyListComponent>
             }
             {
                 navbar === 'account' &&
@@ -704,30 +634,6 @@ function Home() {
                 <br></br>
                 <br></br>
             </footer >
-            {videoSrc !== null &&
-                (
-                    <div id='home-content-video-player'>
-                        <video src={videoSrc} controls autoPlay ></video>
-                        <div id='home-content-video-title'>
-                            <svg height={30} width={30} onClick={closeVideo}>
-                                <line x1={4} y1={15} x2={14} y2={5} stroke='white' strokeWidth={3}></line>
-                                <line x1={4} y1={15} x2={14} y2={25} stroke='white' strokeWidth={3}></line>
-                                <line x1={4} y1={15} x2={29} y2={15} stroke='white' strokeWidth={3}></line>
-                            </svg>
-                            <p style={{ color: 'white', fontFamily: 'NetflixSans', fontSize: '20px' }}> <span style={{ color: 'rgb(229,9,20)', fontSize: '25px', fontWeight: 'bolder' }}> | </span> {videoTitle}</p>
-                        </div>
-                    </div>
-                )
-            }
-            {planExpired &&
-                <div id='home-plan-expired'>
-                    <div id='plan-expired'>
-                        <h2 style={{ color: 'white', fontFamily: 'NetflixSans' }}>Your subscription plan has expired. To continue using our services, please renew your subscription.
-                        </h2>
-                        <Link to='/' >Sign In</Link>
-                    </div>
-                </div>
-            }
         </div >
     )
 }

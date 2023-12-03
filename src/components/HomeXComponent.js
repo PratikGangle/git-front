@@ -51,8 +51,6 @@ function HomeXComponent({ contents }) {
     const [contentInfoLink, setContentInfoLink] = useState([]);
     const [seasonLink, setSeasonLink] = useState(null);
     const [runtimeLink, setRuntimeLink] = useState(null);
-    const [movieLink, setMovieLink] = useState(null);
-    const [seriesLink, setSeriesLink] = useState(null);
     const [episodeLink, setEpisodeLink] = useState(null);
 
     useEffect(() => {
@@ -63,8 +61,6 @@ function HomeXComponent({ contents }) {
             setSeasonLink(contentImgArray[Object.keys(contentImgArray)][Object.keys(contentImgArray[Object.keys(contentImgArray)])].NoOfSeasons);
             setRuntimeLink(contentImgArray[Object.keys(contentImgArray)][Object.keys(contentImgArray[Object.keys(contentImgArray)])].runtime);
             setEpisodeLink(contentImgArray[Object.keys(contentImgArray)][Object.keys(contentImgArray[Object.keys(contentImgArray)])].NoOfEpisodes);
-            setMovieLink(contentImgArray[Object.keys(contentImgArray)][Object.keys(contentImgArray[Object.keys(contentImgArray)])].movieLink);
-            setSeriesLink(contentImgArray[Object.keys(contentImgArray)][Object.keys(contentImgArray[Object.keys(contentImgArray)])].seriesLink);
         }
     }, [contentImgArray, setImgLink, setMaturityRatingLink, setContentInfoLink, setSeasonLink])
 
@@ -269,8 +265,6 @@ function HomeXComponent({ contents }) {
     const [loading, setLoading] = useState(true);
     const [i, setI] = useState(-1);
 
-    const moreInfoRef = useRef([]);
-
 
     const timeoutRef = useRef();
 
@@ -305,7 +299,6 @@ function HomeXComponent({ contents }) {
 
 
             if (videoLink !== null) {
-                moreInfoRef.current[i].style.display = 'block';
                 insiderImgRef.current[i].style.display = 'none';
                 insiderVolumneControlRef.current[i].style.display = 'block';
                 videoTitleImgRef.current[i].style.display = 'block';
@@ -338,7 +331,6 @@ function HomeXComponent({ contents }) {
                 insiderImgRef.current[i].style.display = 'block';
                 insiderVolumneControlRef.current[i].style.display = 'none';
                 videoTitleImgRef.current[i].style.display = 'none';
-                moreInfoRef.current[i].style.display = 'none';
             }
         }
         return () => {
@@ -457,6 +449,7 @@ function HomeXComponent({ contents }) {
     }
 
 
+    const moreInfoRef = useRef([]);
 
     const handleMoreInfo = (index) => {
         updateShowMore(true);
@@ -491,48 +484,6 @@ function HomeXComponent({ contents }) {
         moreInfoTitleRef.current[index].style.display = 'none'
     }
 
-    const [videoSrc, setVideoSrc] = useState(null);
-    const [videoTitle, setVideoTitle] = useState(null);
-
-
-    const playContent = async (index) => {
-        if (movieLink !== undefined) {
-            setVideoSrc(movieLink);
-        } else {
-            setVideoSrc(seriesLink);
-        }
-        setVideoTitle(contentArray.contentTitle[index]);
-
-        try {
-            const response = await fetch('/userHistory/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-                body: JSON.stringify({ email: email, contentLinkName: contentArray.contentLinkName[index] }),
-            });
-
-            if (response.status === 200) {
-                // console.log('Added successfully');
-                updateMyListUpdation((prev) => prev + 1);
-            }
-            else if (response.status === 400) {
-                // console.log('Failed: ', response.status);
-            }
-            else {
-                // console.log('Failed:', response.status);
-            }
-        } catch (error) {
-            // console.error('Error adding content to user list:', error);
-        }
-
-    }
-
-    const closeVideo = () => {
-        setVideoSrc(null);
-        setVideoTitle(null);
-    }
 
 
     const contentArray = contents.find((contents) => contents)
@@ -599,7 +550,7 @@ function HomeXComponent({ contents }) {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginLeft: '10px' }}>
                                 <div>
-                                    <svg height={"42px"} width={"42px"} onClick={() => playContent(t1)}>
+                                    <svg height={"42px"} width={"42px"}>
                                         <circle cx={20} cy={20} r='19' stroke='white' fill='white'></circle>
                                         <polygon points="15,10 15,30 30,20" fill="black" strokeWidth="1" stroke="black"></polygon>
                                     </svg>
@@ -680,7 +631,7 @@ function HomeXComponent({ contents }) {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginLeft: '10px' }}>
                                 <div>
-                                    <svg height={"42px"} width={"42px"} onClick={() => playContent(t2)}>
+                                    <svg height={"42px"} width={"42px"}>
                                         <circle cx={20} cy={20} r='19' stroke='white' fill='white'></circle>
                                         <polygon points="15,10 15,30 30,20" fill="black" strokeWidth="1" stroke="black"></polygon>
                                     </svg>
@@ -759,7 +710,7 @@ function HomeXComponent({ contents }) {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginLeft: '10px' }}>
                                 <div>
-                                    <svg height={"42px"} width={"42px"} onClick={() => playContent(t3)}>
+                                    <svg height={"42px"} width={"42px"}>
                                         <circle cx={20} cy={20} r='19' stroke='white' fill='white'></circle>
                                         <polygon points="15,10 15,30 30,20" fill="black" strokeWidth="1" stroke="black"></polygon>
                                     </svg>
@@ -838,7 +789,7 @@ function HomeXComponent({ contents }) {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginLeft: '10px' }}>
                                 <div>
-                                    <svg height={"42px"} width={"42px"} onClick={() => playContent(t4)}>
+                                    <svg height={"42px"} width={"42px"}>
                                         <circle cx={20} cy={20} r='19' stroke='white' fill='white'></circle>
                                         <polygon points="15,10 15,30 30,20" fill="black" strokeWidth="1" stroke="black"></polygon>
                                     </svg>
@@ -897,21 +848,6 @@ function HomeXComponent({ contents }) {
                     <button onClick={() => handleSlide('right')} onMouseEnter={() => handleMouseEnterScroll('right')} onMouseLeave={() => handleMouseLeaveScroll('right')} style={trailerScrollRightButton} ref={rightButtonRef}>&rsaquo;</button>
                 </div>
             </div>
-            {videoSrc !== null &&
-                (
-                    <div id='home-content-video-player'>
-                        <video src={videoSrc} controls autoPlay ></video>
-                        <div id='home-content-video-title'>
-                            <svg height={30} width={30} onClick={closeVideo}>
-                                <line x1={4} y1={15} x2={14} y2={5} stroke='white' strokeWidth={3}></line>
-                                <line x1={4} y1={15} x2={14} y2={25} stroke='white' strokeWidth={3}></line>
-                                <line x1={4} y1={15} x2={29} y2={15} stroke='white' strokeWidth={3}></line>
-                            </svg>
-                            <p style={{ color: 'white', fontFamily: 'NetflixSans', fontSize: '20px' }}> <span style={{ color: 'rgb(229,9,20)', fontSize: '25px', fontWeight: 'bolder' }}> | </span> {videoTitle}</p>
-                        </div>
-                    </div>
-                )
-            }
         </>
     )
 }
